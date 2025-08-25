@@ -152,18 +152,17 @@
         let playerGender = '';
         let playerScore = 0;
         let computerScore = 0;
-        let playerHistory = [];
         let isGameActive = false;
         let currentStageIndex = 0;
         let countdownInterval;
 
         const storyStages = [
-            { name: "گارد یک", difficulty: "easy", dialogueStart: "فکر کردی می‌تونی از اینجا فرار کنی؟ برو به برادرت ملحق شو.", dialogueWin: "عجب! تو قوی‌تر از چیزی بودی که فکر می‌کردم، {name}.", dialogueLose: "نخیر... تو اینجا می‌مونی، {name}." },
-            { name: "گارد دو", difficulty: "easy", dialogueStart: "بیا این بازی رو شروع کنیم تا زودتر تموم بشه. می‌خوام به خونه برم.", dialogueWin: "تو خیلی قوی هستی، {name}. امیدوارم به برادرت برسی.", dialogueLose: "تو اینجا گیر افتادی. مثل همه ما." },
-            { name: "نگهبان بی‌رحم", difficulty: "medium", dialogueStart: "شنیدم برای نجات برادرت اومدی، {name}. داستانت خیلی قشنگه، ولی هیچوقت به پایان خوش نمی‌رسه.", dialogueWin: "غیرممکنه! از این آدمای احمق همیشه بهتر بودم. تو کی هستی؟", dialogueLose: "بهت که گفتم داستانت پایان خوش نداره." },
-            { name: "رئیس بی‌رحم", difficulty: "hard", dialogueStart: "تو اینجا چه کار می‌کنی؟ تو که نمی‌تونی از این کارها بکنی. تو فقط یک آدم معمولی هستی.", dialogueWin: "عالی بود، آماده‌ام برای مرحله بعد.", dialogueLose: "فقط یک شانس بود!" },
-            { name: "پروفسور مریم", difficulty: "hard", dialogueStart: "من الگوریتم‌های بازی رو خودم نوشتم. شانسی نداری.", dialogueWin: "غیرممکنه! چطور الگوریتم من رو شکستی؟", dialogueLose: "همیشه می‌دونم داری چه کاری می‌کنی." },
-            { name: "بازیکن نهایی", difficulty: "hard", dialogueStart: "اینجا پایان راه است. آیا آماده‌ای؟", dialogueWin: "تو برنده هستی... کل بازی رو بردی! بهت افتخار می‌کنم!", dialogueLose: "این پایان راه برای توست." },
+            { name: "گارد یک", dialogueStart: "فکر کردی می‌تونی از اینجا فرار کنی؟ برو به برادرت ملحق شو.", dialogueWin: "عجب! تو قوی‌تر از چیزی بودی که فکر می‌کردم، {name}.", dialogueLose: "نخیر... تو اینجا می‌مونی، {name}." },
+            { name: "گارد دو", dialogueStart: "بیا این بازی رو شروع کنیم تا زودتر تموم بشه. می‌خوام به خونه برم.", dialogueWin: "تو خیلی قوی هستی، {name}. امیدوارم به برادرت برسی.", dialogueLose: "تو اینجا گیر افتادی. مثل همه ما." },
+            { name: "نگهبان بی‌رحم", dialogueStart: "شنیدم برای نجات برادرت اومدی، {name}. داستانت خیلی قشنگه، ولی هیچوقت به پایان خوش نمی‌رسه.", dialogueWin: "غیرممکنه! از این آدمای احمق همیشه بهتر بودم. تو کی هستی؟", dialogueLose: "بهت که گفتم داستانت پایان خوش نداره." },
+            { name: "رئیس بی‌رحم", dialogueStart: "تو اینجا چه کار می‌کنی؟ تو که نمی‌تونی از این کارها بکنی. تو فقط یک آدم معمولی هستی.", dialogueWin: "عالی بود، آماده‌ام برای مرحله بعد.", dialogueLose: "فقط یک شانس بود!" },
+            { name: "پروفسور مریم", dialogueStart: "من الگوریتم‌های بازی رو خودم نوشتم. شانسی نداری.", dialogueWin: "غیرممکنه! چطور الگوریتم من رو شکستی؟", dialogueLose: "همیشه می‌دونم داری چه کاری می‌کنی." },
+            { name: "بازیکن نهایی", dialogueStart: "اینجا پایان راه است. آیا آماده‌ای؟", dialogueWin: "تو برنده هستی... کل بازی رو بردی! بهت افتخار می‌کنم!", dialogueLose: "این پایان راه برای توست." },
         ];
 
         function showSection(id) {
@@ -234,7 +233,6 @@
                 isGameActive = false;
                 
                 const playerChoice = e.target.id.replace('-btn', '');
-                playerHistory.push(playerChoice);
                 
                 const computerChoice = getComputerChoice();
                 
@@ -243,7 +241,7 @@
                 setTimeout(() => {
                     const result = determineWinner(playerChoice, computerChoice);
                     updateScores(result);
-                    progressStory(result);
+                    checkRoundResult();
                 }, 3000);
             });
         });
@@ -260,8 +258,18 @@
             storyOpponentName.textContent = `حریف: ${stage.name}`;
             storyDialogue.textContent = stage.dialogueStart.replace('{name}', playerName);
             
-            resetGame();
+            resetRoundScores();
             isGameActive = true;
+        }
+
+        function checkRoundResult() {
+            if (playerScore >= 3) {
+                progressStory('win');
+            } else if (computerScore >= 3) {
+                progressStory('lose');
+            } else {
+                isGameActive = true;
+            }
         }
 
         function progressStory(result) {
@@ -285,7 +293,6 @@
 
         function endStoryMode(isWinner) {
             isGameActive = false;
-            showSection('end-game-section');
             if (isWinner) {
                 showSection('final-story-section');
             } else {
@@ -314,10 +321,6 @@
         }
 
         function getComputerChoice() {
-            const lastTwoMoves = playerHistory.slice(-2);
-            if (lastTwoMoves.length >= 2 && lastTwoMoves[0] === lastTwoMoves[1]) {
-                return rules[lastTwoMoves[0]];
-            }
             return choices[Math.floor(Math.random() * choices.length)];
         }
 
@@ -337,7 +340,7 @@
             document.getElementById('computer-score').textContent = computerScore;
         }
 
-        function resetGame() {
+        function resetRoundScores() {
             playerScore = 0;
             computerScore = 0;
             document.getElementById('player-score').textContent = 0;
