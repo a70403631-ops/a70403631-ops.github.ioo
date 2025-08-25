@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سنگ، کاغذ، قیچی حرفه‌ای</title>
+    <title>سنگ، کاغذ، قیچی - فصل اول: فرار از سایه‌ها</title>
     <style>
         body {
             font-family: 'Vazirmatn', sans-serif;
@@ -22,6 +22,8 @@
             padding: 20px 40px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 90%;
         }
 
         h1 {
@@ -34,9 +36,10 @@
         }
 
         .setting-options button,
-        .difficulty-options button,
         .play-again-btn,
-        #save-score-btn {
+        #start-story-btn,
+        #profile-creation-btn,
+        .story-button {
             padding: 8px 15px;
             margin: 5px;
             border: 1px solid #ccc;
@@ -45,9 +48,7 @@
             background-color: #f8f8f8;
         }
         
-        .setting-options button.active,
-        .difficulty-options button.active,
-        .play-again-btn {
+        .play-again-btn, #story-mode-btn {
             background-color: #007bff;
             color: white;
             border-color: #007bff;
@@ -102,12 +103,6 @@
             transform: scale(1.1);
         }
 
-        #result-container {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-
         .score-display {
             font-size: 1.5rem;
             font-weight: bold;
@@ -120,87 +115,145 @@
             color: #28a745;
         }
         
-        .leaderboard-section {
+        .story-mode-display {
             display: none;
-        }
-        
-        #leaderboard-list {
-            list-style-type: none;
-            padding: 0;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
         }
 
-        #leaderboard-list li {
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
+        .story-mode-dialogue {
+            font-style: italic;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        #intro-story-section {
+            display: none;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            padding: 20px;
+            text-align: justify;
+        }
+
+        #profile-creation-section {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        #final-story-section {
+            display: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1.8;
+            padding: 20px;
+            color: #d9534f;
+        }
+
+        #player-name-input {
+            padding: 10px;
+            font-size: 1.2rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        #gender-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .gender-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>سنگ، کاغذ، قیچی</h1>
 
-        <div id="start-section">
-            <p class="section-title">تنظیمات بازی</p>
-            <div class="setting-options">
-                <button id="best-of-5-btn" class="active">بهترین از ۵</button>
-                <button id="best-of-10-btn">بهترین از ۱۰</button>
+    <div id="main-content">
+        <div class="container">
+            <h1>سنگ، کاغذ، قیچی</h1>
+
+            <div id="start-section">
+                <p class="section-title">به بازی خوش آمدید!</p>
+                <button class="play-again-btn" id="start-story-btn">شروع داستان</button>
+            </div>
+
+            <div id="profile-creation-section" style="display: none;">
+                <p class="section-title">پروفایل خود را بسازید</p>
+                <input type="text" id="player-name-input" placeholder="نام شما" maxlength="15">
+                <div id="gender-options">
+                    <button class="gender-btn" data-gender="مرد">👦 مرد</button>
+                    <button class="gender-btn" data-gender="زن">👧 زن</button>
+                </div>
+                <button id="profile-creation-btn" style="display: none;">تایید</button>
             </div>
             
-            <p class="section-title">انتخاب سطح دشواری</p>
-            <div class="difficulty-options">
-                <button id="easy-btn" class="active">راحت</button>
-                <button id="medium-btn">متوسط</button>
-                <button id="hard-btn">سخت</button>
+            <div id="intro-story-section">
+                <p>در یک شب بارانی، شما را بی‌رحمانه گرفتند و به اینجا آوردند. این یک زندان معمولی نیست؛ اینجا میدان نبرد است، جایی برای بازی‌های مرگ و زندگی. شما راهی برای فرار از دست آنها ندارید، مگر اینکه در بازی سنگ، کاغذ، قیچی پیروز شوید.</p>
+                <p>تنها انگیزه شما، نجات برادر کوچک خودتان است که او نیز در اسارت است. هر پیروزی، شما را یک قدم به آزادی او نزدیک‌تر می‌کند. شکست... به معنای پایان است.</p>
+                <button class="story-button" id="start-first-stage-btn">شروع ماجراجویی</button>
+            </div>
+
+            <div id="story-mode-section" class="story-mode-display">
+                <h2 id="story-stage-title"></h2>
+                <p id="story-opponent-name"></p>
+                <p id="story-dialogue" class="story-mode-dialogue"></p>
+            </div>
+
+            <div class="game-area" id="game-area-container">
+                <div id="countdown" class="game-countdown"></div>
+                <div class="hands-display">
+                    <div id="player-hand" class="hand"></div>
+                    <div id="computer-hand" class="hand computer-hand"></div>
+                </div>
+                <div id="game-options">
+                    <button id="rock-btn">✊</button>
+                    <button id="paper-btn">🖐️</button>
+                    <button id="scissors-btn">✌️</button>
+                </div>
+                
+                <p class="score-display">شما: <span id="player-score">0</span> - حریف: <span id="computer-score">0</span></p>
+            </div>
+
+            <div id="end-game-section" style="display: none;">
+                <p id="final-result"></p>
+                <button class="play-again-btn">بازی دوباره</button>
+            </div>
+
+            <div id="final-story-section" style="display: none;">
+                <p>با آخرین پیروزی، شما نفس‌نفس می‌زنید. نگهبانان ترسیده به شما نگاه می‌کنند. برادر کوچکتان را در آغوش می‌گیرید. صدای شلیک گلوله می‌آید، از پشت سر ... دنیا سیاه می‌شود.
+                <br><br>
+                منتظر فصل دوم باشید . . .</p>
             </div>
             
-            <button class="play-again-btn" id="start-game-btn">شروع بازی</button>
-        </div>
-
-        <div class="game-area" id="game-area-container">
-            <div id="countdown" class="game-countdown"></div>
-            <div class="hands-display">
-                <div id="player-hand" class="hand"></div>
-                <div id="computer-hand" class="hand computer-hand"></div>
-            </div>
-            <div id="game-options">
-                <button id="rock-btn">✊</button>
-                <button id="paper-btn">🖐️</button>
-                <button id="scissors-btn">✌️</button>
-            </div>
-            
-            <p class="score-display">شما: <span id="player-score">0</span> - کامپیوتر: <span id="computer-score">0</span></p>
-        </div>
-
-        <div id="end-game-section" style="display: none;">
-            <p id="final-result"></p>
-            <input type="text" id="username-input" placeholder="نام خود را وارد کنید">
-            <button id="save-score-btn">ثبت امتیاز</button>
-            <button class="play-again-btn">بازی دوباره</button>
-        </div>
-
-        <div class="leaderboard-section" id="leaderboard-section">
-            <p class="section-title">برترین امتیازها</p>
-            <ol id="leaderboard-list"></ol>
         </div>
     </div>
 
     <script>
         const gameChoices = document.querySelectorAll('#game-options button');
-        const bestOf5Btn = document.getElementById('best-of-5-btn');
-        const bestOf10Btn = document.getElementById('best-of-10-btn');
-        const difficultyBtns = document.querySelectorAll('.difficulty-options button');
-        const startGameBtn = document.getElementById('start-game-btn');
+        const startStoryBtn = document.getElementById('start-story-btn');
+        const introStorySection = document.getElementById('intro-story-section');
+        const startFirstStageBtn = document.getElementById('start-first-stage-btn');
+        const profileCreationSection = document.getElementById('profile-creation-section');
+        const playerNameInput = document.getElementById('player-name-input');
+        const genderOptions = document.querySelectorAll('.gender-btn');
+        const profileCreationBtn = document.getElementById('profile-creation-btn');
+        const storyModeSection = document.getElementById('story-mode-section');
+        const storyStageTitle = document.getElementById('story-stage-title');
+        const storyOpponentName = document.getElementById('story-opponent-name');
+        const storyDialogue = document.getElementById('story-dialogue');
         const gameAreaContainer = document.getElementById('game-area-container');
-        const startSection = document.getElementById('start-section');
-        const endGameSection = document.getElementById('end-game-section');
-        const playAgainBtns = document.querySelectorAll('.play-again-btn');
+        const endGameStateSection = document.getElementById('end-game-section');
         const finalResultDisplay = document.getElementById('final-result');
-        const usernameInput = document.getElementById('username-input');
-        const saveScoreBtn = document.getElementById('save-score-btn');
-        const leaderboardSection = document.getElementById('leaderboard-section');
-        const leaderboardList = document.getElementById('leaderboard-list');
+        const finalStorySection = document.getElementById('final-story-section');
+        const playAgainBtns = document.querySelectorAll('.play-again-btn');
 
         const choices = ['rock', 'paper', 'scissors'];
         const rules = {
@@ -215,49 +268,90 @@
             scissors: '✌️'
         };
         
-        // Audio elements
-        const startSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); // Placeholder
-        const winSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'); // Placeholder
-        const loseSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'); // Placeholder
-        const countdownSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'); // Placeholder
-
-        let difficulty = 'easy';
-        let bestOf = 5;
+        // اطلاعات بازیکن
+        let playerName = '';
+        let playerGender = ''; // 'مرد' or 'زن'
         let playerScore = 0;
         let computerScore = 0;
         let playerHistory = [];
         let isGameActive = false;
-        let countdownValue = 3;
+        let currentStageIndex = 0;
+        let countdownInterval;
 
-        // Difficulty and Game Mode settings
-        difficultyBtns.forEach(btn => {
+        // --- داده‌های حالت داستانی ---
+        const storyStages = [
+            { name: "گارد یک", difficulty: "easy", dialogueStart: "فکر کردی می‌تونی از اینجا فرار کنی؟ برو به برادرت ملحق شو.", dialogueWin: "عجب! تو قوی‌تر از چیزی بودی که فکر می‌کردم، {name}.", dialogueLose: "نخیر... تو اینجا می‌مونی، {name}." },
+            { name: "گارد دو", difficulty: "easy", dialogueStart: "بیا این بازی رو شروع کنیم تا زودتر تموم بشه. می‌خوام به خونه برم.", dialogueWin: "تو خیلی قوی هستی، {name}. امیدوارم به برادرت برسی.", dialogueLose: "تو اینجا گیر افتادی. مثل همه ما." },
+            { name: "نگهبان بی‌رحم", difficulty: "medium", dialogueStart: "شنیدم برای نجات برادرت اومدی، {name}. داستانت خیلی قشنگه، ولی هیچوقت به پایان خوش نمی‌رسه.", dialogueWin: "غیرممکنه! از این آدمای احمق همیشه بهتر بودم. تو کی هستی؟", dialogueLose: "بهت که گفتم داستانت پایان خوش نداره." },
+            { name: "رئیس بی‌رحم", difficulty: "hard", dialogueStart: "تو اینجا چه کار می‌کنی؟ تو که نمی‌تونی از این کارها بکنی. تو فقط یک آدم معمولی هستی.", dialogueWin: "عالی بود، آماده‌ام برای مرحله بعد.", dialogueLose: "فقط یک شانس بود!" },
+            { name: "پروفسور مریم", difficulty: "hard", dialogueStart: "من الگوریتم‌های بازی رو خودم نوشتم. شانسی نداری.", dialogueWin: "غیرممکنه! چطور الگوریتم من رو شکستی؟", dialogueLose: "همیشه می‌دونم داری چه کاری می‌کنی." },
+            { name: "بازیکن نهایی", difficulty: "hard", dialogueStart: "اینجا پایان راه است. آیا آماده‌ای؟", dialogueWin: "تو برنده هستی... کل بازی رو بردی! بهت افتخار می‌کنم!", dialogueLose: "این پایان راه برای توست." },
+            // ... (برای کامل کردن 35 مرحله، می‌توانید موارد بیشتری را با این ساختار اضافه کنید)
+        ];
+
+        // --- مدیریت پروفایل و ذخیره‌سازی داده‌ها ---
+        function saveProfile() {
+            localStorage.setItem('playerName', playerName);
+            localStorage.setItem('playerGender', playerGender);
+        }
+
+        function loadProfile() {
+            playerName = localStorage.getItem('playerName');
+            playerGender = localStorage.getItem('playerGender');
+            if (playerName && playerGender) {
+                document.getElementById('start-section').style.display = 'block';
+                document.getElementById('profile-creation-section').style.display = 'none';
+            } else {
+                document.getElementById('start-section').style.display = 'none';
+                document.getElementById('profile-creation-section').style.display = 'flex';
+            }
+        }
+
+        // --- Event Listeners ---
+        startStoryBtn.addEventListener('click', () => {
+            document.getElementById('start-section').style.display = 'none';
+            introStorySection.style.display = 'block';
+        });
+
+        startFirstStageBtn.addEventListener('click', () => {
+            introStorySection.style.display = 'none';
+            storyModeSection.style.display = 'block';
+            gameAreaContainer.style.display = 'flex';
+            startStage(currentStageIndex);
+        });
+
+        genderOptions.forEach(btn => {
             btn.addEventListener('click', () => {
-                difficultyBtns.forEach(b => b.classList.remove('active'));
+                genderOptions.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                difficulty = btn.id.replace('-btn', '');
+                playerGender = btn.dataset.gender;
+                checkProfileReady();
             });
         });
 
-        bestOf5Btn.addEventListener('click', () => {
-            bestOf5Btn.classList.add('active');
-            bestOf10Btn.classList.remove('active');
-            bestOf = 5;
+        playerNameInput.addEventListener('input', () => {
+            checkProfileReady();
         });
 
-        bestOf10Btn.addEventListener('click', () => {
-            bestOf10Btn.classList.add('active');
-            bestOf5Btn.classList.remove('active');
-            bestOf = 10;
+        profileCreationBtn.addEventListener('click', () => {
+            playerName = playerNameInput.value.trim();
+            if (playerName && playerGender) {
+                saveProfile();
+                profileCreationSection.style.display = 'none';
+                document.getElementById('start-section').style.display = 'block';
+                startStoryBtn.click(); // شروع خودکار بازی
+            }
         });
 
-        // Game Logic
-        startGameBtn.addEventListener('click', () => {
-            startSection.style.display = 'none';
-            gameAreaContainer.style.display = 'flex';
-            resetGame();
-            startSound.play();
-        });
-
+        function checkProfileReady() {
+            if (playerNameInput.value.trim() && playerGender) {
+                profileCreationBtn.style.display = 'block';
+            } else {
+                profileCreationBtn.style.display = 'none';
+            }
+        }
+        
+        // --- منطق بازی ---
         gameChoices.forEach(button => {
             button.addEventListener('click', (e) => {
                 if (!isGameActive) return;
@@ -273,28 +367,91 @@
                 setTimeout(() => {
                     const result = determineWinner(playerChoice, computerChoice);
                     updateScores(result);
-                    checkGameOver();
-                    isGameActive = true;
+                    progressStory(result);
                 }, 3000);
             });
         });
+
+        function startStage(stageIndex) {
+            if (stageIndex >= storyStages.length) {
+                endStoryMode(true);
+                return;
+            }
+            
+            const stage = storyStages[stageIndex];
+            difficulty = stage.difficulty;
+            
+            storyStageTitle.textContent = `مرحله ${stageIndex + 1}`;
+            storyOpponentName.textContent = `حریف: ${stage.name}`;
+            storyDialogue.textContent = stage.dialogueStart.replace('{name}', playerName);
+            
+            resetGame();
+            isGameActive = true;
+        }
+
+        function progressStory(result) {
+            const stage = storyStages[currentStageIndex];
+            const dialogue = result === 'win' ? stage.dialogueWin : stage.dialogueLose;
+            storyDialogue.textContent = dialogue.replace('{name}', playerName);
+            
+            setTimeout(() => {
+                if (result === 'win') {
+                    if (currentStageIndex === storyStages.length - 1) {
+                        endStoryMode(true);
+                    } else {
+                        currentStageIndex++;
+                        startStage(currentStageIndex);
+                    }
+                } else {
+                    endStoryMode(false);
+                }
+            }, 2000);
+        }
+
+        function endStoryMode(isWinner) {
+            isGameActive = false;
+            storyModeSection.style.display = 'none';
+            gameAreaContainer.style.display = 'none';
+
+            if (isWinner) {
+                finalStorySection.style.display = 'block';
+            } else {
+                let finalMessage = `شما شکست خوردید.`;
+                finalResultDisplay.textContent = finalMessage;
+                endGameStateSection.style.display = 'flex';
+            }
+        }
         
+        // --- توابع کمکی ---
         function showHands(playerChoice, computerChoice) {
             let count = 3;
             document.getElementById('countdown').textContent = count;
-            document.getElementById('player-hand').textContent = '✊';
+            document.getElementById('player-hand').textContent = choiceIcons[playerChoice];
             document.getElementById('computer-hand').textContent = '✊';
-            countdownSound.play();
             
-            const countdownInterval = setInterval(() => {
+            countdownInterval = setInterval(() => {
                 count--;
-                document.getElementById('countdown').textContent = count > 0 ? count : 'برو!';
-                if (count === 0) {
+                if (count > 0) {
+                    document.getElementById('countdown').textContent = count;
+                } else if (count === 0) {
+                    document.getElementById('countdown').textContent = 'برو!';
+                }
+                
+                if (count < 0) {
                     clearInterval(countdownInterval);
+                    document.getElementById('countdown').textContent = '';
                     document.getElementById('player-hand').textContent = choiceIcons[playerChoice];
                     document.getElementById('computer-hand').textContent = choiceIcons[computerChoice];
                 }
             }, 1000);
+        }
+
+        function getComputerChoice() {
+            const lastTwoMoves = playerHistory.slice(-2);
+            if (lastTwoMoves.length >= 2 && lastTwoMoves[0] === lastTwoMoves[1]) {
+                return rules[lastTwoMoves[0]];
+            }
+            return choices[Math.floor(Math.random() * choices.length)];
         }
 
         function determineWinner(playerChoice, computerChoice) {
@@ -306,73 +463,12 @@
         function updateScores(result) {
             if (result === 'win') {
                 playerScore++;
-                winSound.play();
             } else if (result === 'lose') {
                 computerScore++;
-                loseSound.play();
             }
             document.getElementById('player-score').textContent = playerScore;
             document.getElementById('computer-score').textContent = computerScore;
         }
-
-        function checkGameOver() {
-            if (playerScore === bestOf || computerScore === bestOf) {
-                isGameActive = false;
-                let finalMessage = '';
-                if (playerScore > computerScore) {
-                    finalMessage = 'شما برنده نهایی شدید! 🎉';
-                } else {
-                    finalMessage = 'کامپیوتر برنده نهایی شد! 😞';
-                }
-                finalResultDisplay.textContent = finalMessage;
-                gameAreaContainer.style.display = 'none';
-                endGameSection.style.display = 'flex';
-                updateLeaderboard();
-            }
-        }
-        
-        function getComputerChoice() {
-            // Your existing AI logic here
-            // (Easy, Medium, Hard)
-            // ...
-            return choices[Math.floor(Math.random() * choices.length)];
-        }
-
-        // Leaderboard Logic
-        function getLeaderboard() {
-            const leaderboard = JSON.parse(localStorage.getItem('rpsLeaderboard')) || [];
-            return leaderboard.sort((a, b) => b.score - a.score).slice(0, 10);
-        }
-
-        function updateLeaderboard() {
-            const leaderboard = getLeaderboard();
-            leaderboardList.innerHTML = '';
-            leaderboard.forEach((entry, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `<span>${index + 1}. ${entry.name}</span><span>${entry.score}</span>`;
-                leaderboardList.appendChild(li);
-            });
-            leaderboardSection.style.display = 'block';
-        }
-        
-        saveScoreBtn.addEventListener('click', () => {
-            const username = usernameInput.value.trim();
-            if (username && playerScore > 0) {
-                const leaderboard = getLeaderboard();
-                leaderboard.push({ name: username, score: playerScore });
-                localStorage.setItem('rpsLeaderboard', JSON.stringify(leaderboard));
-                updateLeaderboard();
-                usernameInput.value = '';
-            }
-        });
-
-        playAgainBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                endGameSection.style.display = 'none';
-                gameAreaContainer.style.display = 'flex';
-                resetGame();
-            });
-        });
 
         function resetGame() {
             playerScore = 0;
@@ -382,13 +478,17 @@
             document.getElementById('countdown').textContent = '';
             document.getElementById('player-hand').textContent = '';
             document.getElementById('computer-hand').textContent = '';
-            isGameActive = true;
-            endGameSection.style.display = 'none';
-            leaderboardSection.style.display = 'none';
+            endGameStateSection.style.display = 'none';
         }
-        
-        // Initial setup
-        updateLeaderboard();
+
+        playAgainBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                window.location.reload(); // ساده‌ترین راه برای شروع مجدد
+            });
+        });
+
+        // بارگذاری پروفایل در هنگام بارگذاری صفحه
+        window.onload = loadProfile;
     </script>
 </body>
 </html>
