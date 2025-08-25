@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سنگ، کاغذ، قیچی حرفه‌ای</title>
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        .setting-options button,
+        .difficulty-options button,
+        .play-again-btn,
+        #save-score-btn {
+            padding: 8px 15px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f8f8f8;
+        }
+        
+        .setting-options button.active,
+        .difficulty-options button.active,
+        .play-again-btn {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .game-area {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .game-countdown {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #d9534f;
+        }
+
+        .hands-display {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 20px 0;
+        }
+
+        .hand {
+            font-size: 100px;
+            transform: scaleX(-1);
+        }
+
+        .hand.computer-hand {
+            transform: scaleX(1);
+        }
+
+        #game-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        #game-options button {
+            font-size: 50px;
+            padding: 10px 20px;
+            background: none;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #game-options button:hover {
+            transform: scale(1.1);
+        }
+
+        #result-container {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #final-result {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .leaderboard-section {
+            display: none;
+        }
+        
+        #leaderboard-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #leaderboard-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>سنگ، کاغذ، قیچی</h1>
+
+        <div id="start-section">
+            <p class="section-title">تنظیمات بازی</p>
+            <div class="setting-options">
+                <button id="best-of-5-btn" class="active">بهترین از ۵</button>
+                <button id="best-of-10-btn">بهترین از ۱۰</button>
+            </div>
+            
+            <p class="section-title">انتخاب سطح دشواری</p>
+            <div class="difficulty-options">
+                <button id="easy-btn" class="active">راحت</button>
+                <button id="medium-btn">متوسط</button>
+                <button id="hard-btn">سخت</button>
+            </div>
+            
+            <button class="play-again-btn" id="start-game-btn">شروع بازی</button>
+        </div>
+
+        <div class="game-area" id="game-area-container">
+            <div id="countdown" class="game-countdown"></div>
+            <div class="hands-display">
+                <div id="player-hand" class="hand"></div>
+                <div id="computer-hand" class="hand computer-hand"></div>
+            </div>
+            <div id="game-options">
+                <button id="rock-btn">✊</button>
+                <button id="paper-btn">🖐️</button>
+                <button id="scissors-btn">✌️</button>
+            </div>
+            
+            <p class="score-display">شما: <span id="player-score">0</span> - کامپیوتر: <span id="computer-score">0</span></p>
+        </div>
+
+        <div id="end-game-section" style="display: none;">
+            <p id="final-result"></p>
+            <input type="text" id="username-input" placeholder="نام خود را وارد کنید">
+            <button id="save-score-btn">ثبت امتیاز</button>
+            <button class="play-again-btn">بازی دوباره</button>
+        </div>
+
+        <div class="leaderboard-section" id="leaderboard-section">
+            <p class="section-title">برترین امتیازها</p>
+            <ol id="leaderboard-list"></ol>
+        </div>
+    </div>
+
+    <script>
+        const gameChoices = document.querySelectorAll('#game-options button');
+        const bestOf5Btn = document.getElementById('best-of-5-btn');
+        const bestOf10Btn = document.getElementById('best-of-10-btn');
+        const difficultyBtns = document.querySelectorAll('.difficulty-options button');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const gameAreaContainer = document.getElementById('game-area-container');
+        const startSection = document.getElementById('start-section');
+        const endGameSection = document.getElementById('end-game-section');
+        const playAgainBtns = document.querySelectorAll('.play-again-btn');
+        const finalResultDisplay = document.getElementById('final-result');
+        const usernameInput = document.getElementById('username-input');
+        const saveScoreBtn = document.getElementById('save-score-btn');
+        const leaderboardSection = document.getElementById('leaderboard-section');
+        const leaderboardList = document.getElementById('leaderboard-list');
+
+        const choices = ['rock', 'paper', 'scissors'];
+        const rules = {
+            rock: 'scissors',
+            paper: 'rock',
+            scissors: 'paper'
+        };
+
+        const choiceIcons = {
+            rock: '✊',
+            paper: '🖐️',
+            scissors: '✌️'
+        };
+        
+        // Audio elements
+        const startSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); // Placeholder
+        const winSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'); // Placeholder
+        const loseSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'); // Placeholder
+        const countdownSound = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'); // Placeholder
+
+        let difficulty = 'easy';
+        let bestOf = 5;
+        let playerScore = 0;
+        let computerScore = 0;
+        let playerHistory = [];
+        let isGameActive = false;
+        let countdownValue = 3;
+
+        // Difficulty and Game Mode settings
+        difficultyBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                difficultyBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                difficulty = btn.id.replace('-btn', '');
+            });
+        });
+
+        bestOf5Btn.addEventListener('click', () => {
+            bestOf5Btn.classList.add('active');
+            bestOf10Btn.classList.remove('active');
+            bestOf = 5;
+        });
+
+        bestOf10Btn.addEventListener('click', () => {
+            bestOf10Btn.classList.add('active');
+            bestOf5Btn.classList.remove('active');
+            bestOf = 10;
+        });
+
+        // Game Logic
+        startGameBtn.addEventListener('click', () => {
+            startSection.style.display = 'none';
+            gameAreaContainer.style.display = 'flex';
+            resetGame();
+            startSound.play();
+        });
+
+        gameChoices.forEach(button => {
+            button.addEventListener('click', (e) => {
+                if (!isGameActive) return;
+                isGameActive = false;
+                
+                const playerChoice = e.target.id.replace('-btn', '');
+                playerHistory.push(playerChoice);
+                
+                const computerChoice = getComputerChoice();
+                
+                showHands(playerChoice, computerChoice);
+                
+                setTimeout(() => {
+                    const result = determineWinner(playerChoice, computerChoice);
+                    updateScores(result);
+                    checkGameOver();
+                    isGameActive = true;
+                }, 3000);
+            });
+        });
+        
+        function showHands(playerChoice, computerChoice) {
+            let count = 3;
+            document.getElementById('countdown').textContent = count;
+            document.getElementById('player-hand').textContent = '✊';
+            document.getElementById('computer-hand').textContent = '✊';
+            countdownSound.play();
+            
+            const countdownInterval = setInterval(() => {
+                count--;
+                document.getElementById('countdown').textContent = count > 0 ? count : 'برو!';
+                if (count === 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('player-hand').textContent = choiceIcons[playerChoice];
+                    document.getElementById('computer-hand').textContent = choiceIcons[computerChoice];
+                }
+            }, 1000);
+        }
+
+        function determineWinner(playerChoice, computerChoice) {
+            if (playerChoice === computerChoice) return 'draw';
+            if (rules[playerChoice] === computerChoice) return 'win';
+            return 'lose';
+        }
+
+        function updateScores(result) {
+            if (result === 'win') {
+                playerScore++;
+                winSound.play();
+            } else if (result === 'lose') {
+                computerScore++;
+                loseSound.play();
+            }
+            document.getElementById('player-score').textContent = playerScore;
+            document.getElementById('computer-score').textContent = computerScore;
+        }
+
+        function checkGameOver() {
+            if (playerScore === bestOf || computerScore === bestOf) {
+                isGameActive = false;
+                let finalMessage = '';
+                if (playerScore > computerScore) {
+                    finalMessage = 'شما برنده نهایی شدید! 🎉';
+                } else {
+                    finalMessage = 'کامپیوتر برنده نهایی شد! 😞';
+                }
+                finalResultDisplay.textContent = finalMessage;
+                gameAreaContainer.style.display = 'none';
+                endGameSection.style.display = 'flex';
+                updateLeaderboard();
+            }
+        }
+        
+        function getComputerChoice() {
+            // Your existing AI logic here
+            // (Easy, Medium, Hard)
+            // ...
+            return choices[Math.floor(Math.random() * choices.length)];
+        }
+
+        // Leaderboard Logic
+        function getLeaderboard() {
+            const leaderboard = JSON.parse(localStorage.getItem('rpsLeaderboard')) || [];
+            return leaderboard.sort((a, b) => b.score - a.score).slice(0, 10);
+        }
+
+        function updateLeaderboard() {
+            const leaderboard = getLeaderboard();
+            leaderboardList.innerHTML = '';
+            leaderboard.forEach((entry, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${index + 1}. ${entry.name}</span><span>${entry.score}</span>`;
+                leaderboardList.appendChild(li);
+            });
+            leaderboardSection.style.display = 'block';
+        }
+        
+        saveScoreBtn.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            if (username && playerScore > 0) {
+                const leaderboard = getLeaderboard();
+                leaderboard.push({ name: username, score: playerScore });
+                localStorage.setItem('rpsLeaderboard', JSON.stringify(leaderboard));
+                updateLeaderboard();
+                usernameInput.value = '';
+            }
+        });
+
+        playAgainBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                endGameSection.style.display = 'none';
+                gameAreaContainer.style.display = 'flex';
+                resetGame();
+            });
+        });
+
+        function resetGame() {
+            playerScore = 0;
+            computerScore = 0;
+            document.getElementById('player-score').textContent = 0;
+            document.getElementById('computer-score').textContent = 0;
+            document.getElementById('countdown').textContent = '';
+            document.getElementById('player-hand').textContent = '';
+            document.getElementById('computer-hand').textContent = '';
+            isGameActive = true;
+            endGameSection.style.display = 'none';
+            leaderboardSection.style.display = 'none';
+        }
+        
+        // Initial setup
+        updateLeaderboard();
+    </script>
+</body>
+</html>
